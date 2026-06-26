@@ -3,7 +3,10 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all
+    @tasks = Task.where(scheduled_date: Date.current)
+    @completed_tasks = Task.completed_today
+    @pending_tasks = Task.pending
+    @overdue_tasks = Task.overdue
   end
 
   # GET /tasks/1 or /tasks/1.json
