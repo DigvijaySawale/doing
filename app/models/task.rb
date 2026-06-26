@@ -36,10 +36,16 @@ class Task < ApplicationRecord
     where(completed_at: Date.current.all_day)
   }
 
+  scope :pending, -> {
+    where(scheduled_date: Date.current).where.not(status: :completed)
+  }
+  
+
   private
 
   def set_defaults
     self.scheduled_date ||= Date.current
+    self.due_date ||= Date.current
   end
 
   def calculate_duration
