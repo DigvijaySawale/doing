@@ -1,62 +1,103 @@
-<div id="<%= dom_id task %>">
-  <div>
-    <strong>Title:</strong>
-    <%= task.title %>
-  </div>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+      <div class="card shadow rounded-3">
+        <div class="card-header bg-white">
+          <h5 class="mb-0"><%= task.title %></h5>
+        </div>
 
-  <div>
-    <strong>Description:</strong>
-    <%= task.description %>
-  </div>
+        <div class="card-body">
+          <div id="<%= dom_id task %>">
 
-  <div>
-    <strong>Scheduled date:</strong>
-    <%= task.scheduled_date %>
-  </div>
+            <div class="mb-3">
+              <h6 class="text-muted">Description</h6>
+              <p class="mb-0">
+                <%= task.description.presence || "-" %>
+              </p>
+            </div>
 
-  <div>
-    <strong>Due date:</strong>
-    <%= task.due_date %>
-  </div>
+            <hr>
 
-  <div>
-    <strong>Has time:</strong>
-    <%= task.has_time %>
-  </div>
+            <div class="row mb-3">
+              <div class="col-sm-6">
+                <strong>Scheduled Date</strong><br>
+                <%= friendly_date(task.scheduled_date) %>
+              </div>
 
-  <div>
-    <strong>Start time:</strong>
-    <%= task.start_time %>
-  </div>
+              <div class="col-sm-6">
+                <strong>Due Date</strong><br>
+                <%= friendly_date(task.due_date) %>
+              </div>
+            </div>
 
-  <div>
-    <strong>End time:</strong>
-    <%= task.end_time %>
-  </div>
+            <div class="row mb-3">
+              <div class="col-sm-6">
+                <strong>Start Time</strong><br>
+                <%= task.start_time&.strftime("%I:%M %p") || "-" %>
+              </div>
 
-  <div>
-    <strong>Duration minutes:</strong>
-    <%= task.duration_minutes %>
-  </div>
+              <div class="col-sm-6">
+                <strong>End Time</strong><br>
+                <%= task.end_time&.strftime("%I:%M %p") || "-" %>
+              </div>
+            </div>
 
-  <div>
-    <strong>Priority:</strong>
-    <%= task.priority %>
-  </div>
+            <div class="row mb-3">
+              <div class="col-sm-6">
+                <strong>Duration</strong><br>
+                <%= task.duration_minutes.present? ? "#{task.duration_minutes} mins" : "-" %>
+              </div>
 
-  <div>
-    <strong>Status:</strong>
-    <%= task.status %>
-  </div>
+              <div class="col-sm-6">
+                <strong>Completed At</strong><br>
+                <%= task.completed_at&.strftime("%d %b %Y, %I:%M %p") || "-" %>
+              </div>
+            </div>
 
-  <div>
-    <strong>Completed at:</strong>
-    <%= task.completed_at %>
-  </div>
+            <div class="row mb-3">
+              <div class="col-sm-6">
+                <strong>Priority</strong><br>
+                <span class="badge priority-<%= task.priority.dasherize %>">
+                  <%= task.priority.humanize %>
+                </span>
+              </div>
 
-  <div>
-    <strong>Is recurring:</strong>
-    <%= task.is_recurring %>
-  </div>
+              <div class="col-sm-6">
+                <strong>Status</strong><br>
+                <span class="badge status-<%= task.status.dasherize %>">
+                  <%= task.status.humanize %>
+                </span>
+              </div>
+            </div>
 
+            <div class="row">
+              <div class="col-sm-6">
+                <strong>Has Time</strong><br>
+                <% if task.has_time? %>
+                  <span class="badge bg-success">Yes</span>
+                <% else %>
+                  <span class="badge bg-secondary">No</span>
+                <% end %>
+              </div>
+
+              <div class="col-sm-6">
+                <strong>Recurring</strong><br>
+                <% if task.is_recurring? %>
+                  <span class="badge bg-success">Yes</span>
+                <% else %>
+                  <span class="badge bg-secondary">No</span>
+                <% end %>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card-footer bg-white d-flex justify-content-end gap-2">
+          <%= link_to "Back", tasks_path, class: "btn btn-outline-secondary" %>
+          <%= link_to "Edit", edit_task_path(task), class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
