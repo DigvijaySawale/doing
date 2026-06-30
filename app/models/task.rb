@@ -45,7 +45,7 @@ class Task < ApplicationRecord
 
   def set_defaults
     self.scheduled_date ||= Date.current
-    self.due_date ||= Date.current
+    # self.due_date ||= Date.current
   end
 
   def calculate_duration

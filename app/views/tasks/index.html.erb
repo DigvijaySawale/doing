@@ -1,9 +1,9 @@
 <div class="container">
-  <p style="color: green"><%= notice %></p>
+  <p class="alert alert-success" role="alert"><%= notice %></p>
 
-  <% content_for :title, "Tasks" %>
+  <% content_for :title, "Today's Tasks" %>
 
-  <h1>Tasks</h1>
+  <h1>Today's Tasks</h1>
 
   <div class="row mb-4">
     <div class="col-md-3">
@@ -46,7 +46,7 @@
   <div id="tasks">
     <% if @tasks.any? %>
       
-      <table class="table table-striped">
+      <table class="table table-striped table-hover align-middle table-responsive">
         <thead>
           <tr>
             <th scope="col">Title</th>
@@ -60,17 +60,57 @@
         <tbody>
           <% @tasks.each do |task| %>
             <tr>
-              <td><%= task.title %></td>
-              <td><%= task.scheduled_date.strftime("%d %b") %></td>
-              <td><%= task.due_date&.strftime("%d %b") %></td>
-              <td><%= task.priority %></td>
-              <td><%= task.status %></td>
-              <td ><%= link_to "Show", task %> |<%= link_to "Edit", edit_task_path(task) %> | <%= link_to "Destroy", task,
-                  class: "text-danger",
-                  data: {
-                    turbo_method: :delete,
-                    turbo_confirm: "Are you sure?"
-                  } %>
+              <td>
+                <%= link_to task.title, task, class: "text-decoration-none fw-semibold" %>
+              </td>
+              <td><%= friendly_date(task.scheduled_date) %></td>
+              <td><%= friendly_date(task.due_date) %></td>
+              <td>
+                <%= form_with model: task, local: true do |f| %>
+                  <%= f.select :priority,
+                        Task.priorities.keys.map { |p| [p.titleize, p] },
+                        {},
+                        {
+                          class: "form-select form-select-sm priority-#{task.priority.dasherize}",
+                          onchange: "this.form.requestSubmit()"
+                        } %>
+                <% end %>
+              </td>
+              <td>
+                <div class="dropdown">
+                <%= form_with model: task, local: true do |f| %>
+                  <%= f.select :status,
+                        Task.statuses.keys.map { |s| [s.titleize, s] },
+                        {},
+                        {
+                          class: "form-select form-select-sm status-#{task.status.dasherize}",
+                          onchange: "this.form.requestSubmit()"
+                        } %>
+                <% end %>
+                </div>
+              </td>
+
+              <td >
+                <div class="btn-group" role="group" aria-label="Basic example">             
+                  <% unless task.completed? %>
+                    <%= link_to "Complete",
+                      complete_task_path(task),
+                      class: "btn btn-sm btn-success",
+                      data: { turbo_method: :patch } %>
+                  <% end %>
+
+                  <%= link_to "Edit", 
+                    edit_task_path(task),
+                    class: "btn btn-sm btn-info" %>  
+
+                  <%= link_to "Delete", 
+                    task,
+                    class: "btn btn-sm btn-danger",
+                    data: {
+                      turbo_method: :delete,
+                      turbo_confirm: "Are you sure?"
+                    } %>
+                </div>
               </td>
             </tr>
           <% end %>
@@ -78,8 +118,9 @@
       </table>
     
     <% else %>
-      <h5>🎉 No tasks scheduled for today.</h5>
-      <h5>Create your first task to get started.</h5>
+      <h5>🎉 You're all caught up!.</h5>
+      <h5>No tasks scheduled for today.</h5>
+      <%= link_to "Create Task", new_task_path %>
     <% end %>
   </div>
 </div>

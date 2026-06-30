@@ -1,74 +1,110 @@
-<%= form_with(model: task) do |form| %>
-  <% if task.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:</h2>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+      <div class="card shadow rounded-3">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">
+            <%= task.persisted? ? "Edit Task" : "New Task" %>
+          </h5>
+        </div>
 
-      <ul>
-        <% task.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+        <div class="card-body">
+          <%= form_with(model: task) do |form| %>
+            <% if task.errors.any? %>
+              <div class="alert alert-danger">
+                <h6 class="alert-heading">
+                  <%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:
+                </h6>
+                <ul class="mb-0">
+                  <% task.errors.each do |error| %>
+                    <li><%= error.full_message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= form.label :title, class: "form-label" %>
+              <%= form.text_field :title, class: "form-control" %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :description, class: "form-label" %>
+              <%= form.text_area :description, class: "form-control", rows: 3 %>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <%= form.label :scheduled_date, class: "form-label" %>
+                <%= form.date_field :scheduled_date, class: "form-control" %>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <%= form.label :due_date, class: "form-label" %>
+                <%= form.date_field :due_date, class: "form-control" %>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <%= form.label :start_time, class: "form-label" %>
+                <%= form.time_field :start_time, class: "form-control" %>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <%= form.label :end_time, class: "form-label" %>
+                <%= form.time_field :end_time, class: "form-control" %>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :duration_minutes, class: "form-label" %>
+              <%= form.number_field :duration_minutes, class: "form-control" %>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <%= form.label :priority, class: "form-label" %>
+                <%= form.select :priority,
+                      Task.priorities.keys.map { |p| [p.humanize, p] },
+                      {},
+                      class: "form-select" %>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <%= form.label :status, class: "form-label" %>
+                <%= form.select :status,
+                      Task.statuses.keys.map { |s| [s.humanize, s] },
+                      {},
+                      class: "form-select" %>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="form-check">
+                  <%= form.check_box :has_time, class: "form-check-input" %>
+                  <%= form.label :has_time, class: "form-check-label" %>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-check">
+                  <%= form.check_box :is_recurring, class: "form-check-input" %>
+                  <%= form.label :is_recurring, class: "form-check-label" %>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-end">
+              <%= link_to "Cancel", tasks_path, class: "btn btn-outline-secondary me-2" %>
+              <%= form.submit class: "btn btn-success" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
-  <% end %>
-
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
   </div>
-
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.textarea :description %>
-  </div>
-
-  <div>
-    <%= form.label :scheduled_date, style: "display: block" %>
-    <%= form.date_field :scheduled_date %>
-  </div>
-
-  <div>
-    <%= form.label :due_date, style: "display: block" %>
-    <%= form.date_field :due_date %>
-  </div>
-
-  <div>
-    <%= form.label :has_time, style: "display: block" %>
-    <%= form.checkbox :has_time %>
-  </div>
-
-  <div>
-    <%= form.label :start_time, style: "display: block" %>
-    <%= form.time_field :start_time %>
-  </div>
-
-  <div>
-    <%= form.label :end_time, style: "display: block" %>
-    <%= form.time_field :end_time %>
-  </div>
-
-  <div>
-    <%= form.label :duration_minutes, style: "display: block" %>
-    <%= form.number_field :duration_minutes %>
-  </div>
-
-  <div>
-    <%= form.label :priority, style: "display: block" %>
-    <%= form.select :priority,
-                Task.priorities.keys.map { |p| [p.humanize, p] } %>
-  </div>
-
-  <div>
-    <%= form.label :status, style: "display: block" %>
-    <%= form.select :status,
-                Task.statuses.keys.map { |s| [s.humanize, s] } %>
-  </div>
-
-  <div>
-    <%= form.label :is_recurring, style: "display: block" %>
-    <%= form.checkbox :is_recurring %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+</div>
