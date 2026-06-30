@@ -67,3 +67,4 @@ end
 
 gem "bootstrap", "~> 5.3"
 gem "dartsass-rails"
+gem 'pry', '~> 0.15.0'

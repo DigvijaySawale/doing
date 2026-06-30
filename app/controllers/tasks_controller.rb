@@ -1,9 +1,10 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[ show edit update destroy ]
+  before_action :set_task, only: %i[ show edit update destroy complete]
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.where(scheduled_date: Date.current)
+    @tasks = Task.today
+    #fetching tasks using scopes from model
     @completed_tasks = Task.completed_today
     @pending_tasks = Task.pending
     @overdue_tasks = Task.overdue
@@ -41,7 +42,7 @@ class TasksController < ApplicationController
   def update
     respond_to do |format|
       if @task.update(task_params)
-        format.html { redirect_to @task, notice: "Task was successfully updated.", status: :see_other }
+        format.html { redirect_to tasks_path, notice: "Task was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @task }
       else
         format.html { render :edit, status: :unprocessable_content }
@@ -58,6 +59,12 @@ class TasksController < ApplicationController
       format.html { redirect_to tasks_path, notice: "Task was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
     end
+  end
+
+  #make task complete
+  def complete
+    @task.update(status: :completed)
+    redirect_to tasks_path, notice: "Task marked as completed."
   end
 
   private

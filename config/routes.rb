@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
-  resources :tasks
+  resources :tasks do
+    member do
+      patch :complete
+    end
+  end
+
   # get "pages/home"
 
   root "pages#home"

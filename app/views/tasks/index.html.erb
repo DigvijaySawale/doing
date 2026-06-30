@@ -60,17 +60,57 @@
         <tbody>
           <% @tasks.each do |task| %>
             <tr>
-              <td><%= task.title %></td>
+              <td>
+                <%= link_to task.title, task, class: "text-decoration-none fw-semibold" %>
+              </td>
               <td><%= task.scheduled_date.strftime("%d %b") %></td>
               <td><%= task.due_date&.strftime("%d %b") %></td>
-              <td><%= task.priority %></td>
-              <td><%= task.status %></td>
-              <td ><%= link_to "Show", task %> |<%= link_to "Edit", edit_task_path(task) %> | <%= link_to "Destroy", task,
-                  class: "text-danger",
-                  data: {
-                    turbo_method: :delete,
-                    turbo_confirm: "Are you sure?"
-                  } %>
+              <td>
+                <%= form_with model: task, local: true do |f| %>
+                  <%= f.select :priority,
+                        Task.priorities.keys.map { |p| [p.titleize, p] },
+                        {},
+                        {
+                          class: "form-select form-select-sm",
+                          onchange: "this.form.requestSubmit()"
+                        } %>
+                <% end %>
+              </td>
+              <td>
+                <div class="dropdown">
+                <%= form_with model: task, local: true do |f| %>
+                  <%= f.select :status,
+                        Task.statuses.keys.map { |s| [s.titleize, s] },
+                        {},
+                        {
+                          class: "form-select form-select-sm",
+                          onchange: "this.form.requestSubmit()"
+                        } %>
+                <% end %>
+                </div>
+              </td>
+
+              <td >
+                <div class="btn-group" role="group" aria-label="Basic example">             
+                  <% unless task.completed? %>
+                    <%= link_to "Complete",
+                      complete_task_path(task),
+                      class: "btn btn-sm btn-success",
+                      data: { turbo_method: :patch } %>
+                  <% end %>
+
+                  <%= link_to "Edit", 
+                    edit_task_path(task),
+                    class: "btn btn-sm btn-info" %>  
+
+                  <%= link_to "Delete", 
+                    task,
+                    class: "btn btn-sm btn-danger",
+                    data: {
+                      turbo_method: :delete,
+                      turbo_confirm: "Are you sure?"
+                    } %>
+                </div>
               </td>
             </tr>
           <% end %>
