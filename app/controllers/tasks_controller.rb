@@ -10,6 +10,10 @@ class TasksController < ApplicationController
     @overdue_tasks = Task.overdue
   end
 
+  def upcoming
+    @upcoming_tasks = Task.upcoming
+  end
+
   # GET /tasks/1 or /tasks/1.json
   def show
   end

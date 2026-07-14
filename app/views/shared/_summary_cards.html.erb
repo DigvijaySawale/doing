@@ -1,0 +1,13 @@
+<div class="row mb-4">
+  <% cards.each do |card| %>
+    <div class="col">
+      <div class="card text-bg-<%= card[:class] %> shadow-sm">
+        <div class="card-body text-center">
+          <h6 class="card-title"><%= card[:title] %></h6>
+          <h2><%= card[:count] %></h2>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div >
+    

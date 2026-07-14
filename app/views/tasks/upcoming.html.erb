@@ -1,0 +1,19 @@
+<div class="container">
+  <% if notice.present? %>
+    <p class="alert alert-success" role="alert"><%= notice %></p>
+  <% end %> 
+
+  <% content_for :title, "Upcoming Tasks" %>
+
+  <h1>Upcoming Tasks</h1>
+
+  <%= render "shared/summary_cards", cards: [
+    { title: "Upcoming Tasks", count: @upcoming_tasks.count, class: "primary" },
+    { title: "High Priority Tasks", count: 23, class: "success" },
+    { title: "Next 7 Days", count: 34655, class: "warning" },
+    { title: "Recurring", count: 464, class: "danger" }
+  ] %>
+
+  <%= render "shared/tasks_list", tasks: @upcoming_tasks %>
+    
+</div>
