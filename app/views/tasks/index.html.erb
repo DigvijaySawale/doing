@@ -1,126 +1,19 @@
 <div class="container">
-  <p class="alert alert-success" role="alert"><%= notice %></p>
+  <% if notice.present? %>
+    <p class="alert alert-success" role="alert"><%= notice %></p>
+  <% end %> 
 
   <% content_for :title, "Today's Tasks" %>
 
   <h1>Today's Tasks</h1>
 
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card text-bg-primary shadow-sm">
-        <div class="card-body text-center">
-          <h6 class="card-title">Today's Tasks</h6>
-          <h2><%= @tasks.count %></h2>
-        </div>
-      </div>
-    </div>
+  <%= render "shared/summary_cards", cards: [
+    { title: "Today's Tasks", count: @tasks.count, class: "primary" },
+    { title: "Completed", count: @completed_tasks.count, class: "success" },
+    { title: "Pending", count: @pending_tasks.count, class: "warning" },
+    { title: "Overdue", count: @overdue_tasks.count, class: "danger" }
+  ] %>
 
-    <div class="col-md-3">
-      <div class="card text-bg-success shadow-sm">
-        <div class="card-body text-center">
-          <h6 class="card-title">Completed</h6>
-          <h2><%= @completed_tasks.count %></h2>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card text-bg-warning shadow-sm">
-        <div class="card-body text-center">
-          <h6 class="card-title">Pending</h6>
-          <h2><%= @pending_tasks.count %></h2>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card text-bg-danger shadow-sm">
-        <div class="card-body text-center">
-          <h6 class="card-title">Overdue</h6>
-          <h2><%= @overdue_tasks.count %></h2>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="tasks">
-    <% if @tasks.any? %>
-      
-      <table class="table table-striped table-hover align-middle table-responsive">
-        <thead>
-          <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Scheduled Date</th>
-            <th scope="col">Due date</th>
-            <th scope="col">Priority</th>
-            <th scope="col">Status</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @tasks.each do |task| %>
-            <tr>
-              <td>
-                <%= link_to task.title, task, class: "text-decoration-none fw-semibold" %>
-              </td>
-              <td><%= friendly_date(task.scheduled_date) %></td>
-              <td><%= friendly_date(task.due_date) %></td>
-              <td>
-                <%= form_with model: task, local: true do |f| %>
-                  <%= f.select :priority,
-                        Task.priorities.keys.map { |p| [p.titleize, p] },
-                        {},
-                        {
-                          class: "form-select form-select-sm priority-#{task.priority.dasherize}",
-                          onchange: "this.form.requestSubmit()"
-                        } %>
-                <% end %>
-              </td>
-              <td>
-                <div class="dropdown">
-                <%= form_with model: task, local: true do |f| %>
-                  <%= f.select :status,
-                        Task.statuses.keys.map { |s| [s.titleize, s] },
-                        {},
-                        {
-                          class: "form-select form-select-sm status-#{task.status.dasherize}",
-                          onchange: "this.form.requestSubmit()"
-                        } %>
-                <% end %>
-                </div>
-              </td>
-
-              <td >
-                <div class="btn-group" role="group" aria-label="Basic example">             
-                  <% unless task.completed? %>
-                    <%= link_to "Complete",
-                      complete_task_path(task),
-                      class: "btn btn-sm btn-success",
-                      data: { turbo_method: :patch } %>
-                  <% end %>
-
-                  <%= link_to "Edit", 
-                    edit_task_path(task),
-                    class: "btn btn-sm btn-info" %>  
-
-                  <%= link_to "Delete", 
-                    task,
-                    class: "btn btn-sm btn-danger",
-                    data: {
-                      turbo_method: :delete,
-                      turbo_confirm: "Are you sure?"
-                    } %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+  <%= render "shared/tasks_list", tasks: @tasks %>
     
-    <% else %>
-      <h5>🎉 You're all caught up!.</h5>
-      <h5>No tasks scheduled for today.</h5>
-      <%= link_to "Create Task", new_task_path %>
-    <% end %>
-  </div>
 </div>
