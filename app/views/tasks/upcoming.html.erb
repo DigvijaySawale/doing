@@ -6,14 +6,28 @@
   <% content_for :title, "Upcoming Tasks" %>
 
   <h1>Upcoming Tasks</h1>
+  <h2>Plan and prepare for your upcoming work.</h2>
 
   <%= render "shared/summary_cards", cards: [
     { title: "Upcoming Tasks", count: @upcoming_tasks.count, class: "primary" },
-    { title: "High Priority Tasks", count: 23, class: "success" },
-    { title: "Next 7 Days", count: 34655, class: "warning" },
-    { title: "Recurring", count: 464, class: "danger" }
+    { title: "High Priority Tasks", count: @high_priority_tasks.count, class: "success" },
+    { title: "Next 7 Days", count: (@upcoming_week_tasks.count + @upcoming_day_tasks.count), class: "warning" },
+    { title: "Recurring", count: @recurring_tasks.count, class: "danger" }
   ] %>
 
+  
+  <hr class="hr" />
+  <h3>Tasks scheduled for Tomorrow</h3>
+  <%= render "shared/tasks_list", tasks: @upcoming_day_tasks %>
+
+  <hr class="hr" />
+  <h3>Tasks scheduled in Next 7 Days</h3>
+  <%= render "shared/tasks_list", tasks: @upcoming_week_tasks %>
+
+  <hr class="hr" />
+  <h3>Later</h3>
   <%= render "shared/tasks_list", tasks: @upcoming_tasks %>
+
+  <hr class="hr" />
     
 </div>

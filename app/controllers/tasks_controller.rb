@@ -11,7 +11,11 @@ class TasksController < ApplicationController
   end
 
   def upcoming
-    @upcoming_tasks = Task.upcoming
+    @upcoming_tasks = Task.where("scheduled_date > ?", Date.tomorrow + 7.days)
+    @upcoming_week_tasks= Task.where(scheduled_date: Date.tomorrow.next_day..(Date.tomorrow + 7.days))
+    @upcoming_day_tasks = Task.where(scheduled_date: Date.tomorrow)
+    @recurring_tasks = Task.where(is_recurring: true)
+    @high_priority_tasks = Task.where(priority: "high")
   end
 
   # GET /tasks/1 or /tasks/1.json
